@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>React - Renderização de componentes</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@100&family=Roboto:wght@100&display=swap');
+
+        * {
+            font-family: 'Lato', sans-serif;
+            /* font-family: 'Roboto', sans-serif; */
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        #header {
+            height: 80px;
+            margin-left: 20px;
+            margin-right: 20px;
+            border-bottom: 1pt solid black;
+        }
+
+        .titulo {
+            /* margin-right: 40%; */
+            float: right;
+            color: #27348B;
+        }
+
+        #lista {
+            margin: 0 auto;
+            display: flex;
+            flex-direction: row;
+            width: 95vw;
+            border: 1pt solid gray;
+            justify-content: space-around;
+            align-items: space-around;
+        }
+
+        article {
+            margin: 5;
+            padding: 5;
+        }
+
+        article:hover {
+            background-color: lightgray;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+    <!-- permite edição de elementos HTML dentro do  JS -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Elemento principal da aplicação-->
+    <div id="root"></div>
+
+
+    <!-- script com uso de babel -->
+    <script type="text/babel">
+
+        function Logo(props) {
+            return (
+                <div id="header">
+                    <img src="unisinos-logo.svg" width="200" />
+                    <h2 className="titulo">{props.titulo}</h2>
+                </div>
+            );
+        }
+
+        function Carro(props) {
+            return <article>
+                <h2>{props.marca + ' ' + props.modelo}</h2>
+                <p>{props.ano}</p>
+            </article>;
+        }
+
+        function App() {
+            return (
+                <div>
+                    <Logo titulo="Exemplo 1 - Elementos de interface" />
+                    <div id="main">
+                        <h1>Lista de carros</h1>
+                        <section id="lista">
+                            <Carro modelo="TT" ano="2020" marca="Ferrari" />
+                            <Carro modelo="Diavolo" ano="2021" marca="Lamborghini" />
+                            <Carro modelo="500cc" ano="2022" marca="Fiat" />
+                        </section>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(
+            <App />,
+            document.getElementById('root')
+        );
+
+    </script>
+</body>
+
+</html>

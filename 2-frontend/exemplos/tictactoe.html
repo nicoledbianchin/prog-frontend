@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>React - Composição de elementos</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@400;700&family=Lato:wght@100&display=swap');
+        * {
+            font-family: 'Lato', sans-serif;
+            /* font-family: 'Roboto', sans-serif; */
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Roboto', sans-serif;
+        }
+
+
+        .Jogo {
+            /* background-color: lightblue; */
+            margin: 0 auto;
+            width: 80vw;
+            height: 60vh;
+            
+        }
+        
+        #header {
+            height: 80px; 
+            border-bottom: 1pt solid black;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+        
+        .titulo {
+            /* margin-right: 30%; */
+            float: right;
+            color: #27348B;
+        }
+        
+        
+        .linhas {
+            border-bottom: 0.75pt solid gray;
+        }
+        
+        .colunas {
+            border-right: 0.75pt solid gray;
+        }
+        
+        td {
+            font-family: 'Fuzzy Bubbles', cursive;
+            width: 50px;
+            height: 50px;
+            line-height: 1;
+            vertical-align: middle;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.8em;
+        }
+        table {
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <!-- permite edição de elementos HTML dentro do  JS -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Elemento principal da aplicação-->
+    <div id="root"></div>
+
+    <!-- script com uso de babel -->
+    <script type="text/babel">
+        let turno = true;
+        function play(id) {
+            const cell = document.getElementById(id);
+            if (cell.innerHTML) {
+                alert('Jogada inválida!')
+                return;
+            }
+            if (turno) {
+                cell.innerHTML = 'X';
+                cell.style.color = 'royalblue'
+            } else {
+                cell.innerHTML = 'O';
+                cell.style.color = 'tomato'
+            }
+            turno = !turno;
+        }
+        
+        function Celula(props) {
+            //onClick={(e) => this.deleteRow(id, e)}
+            return <td id={props.id} className={props.className} onClick={(e) => play(props.id)}></td>;
+        }
+        
+        function Tabuleiro(props) {
+            return (
+                <table>
+                <tbody>
+                <tr className="linhas">
+                    <Celula id="00" className="colunas"/>
+                    <Celula id="01" className="colunas"/>
+                    <Celula id="02"/>
+                </tr>
+                <tr className="linhas">
+                    <Celula id="10" className="colunas"/>
+                    <Celula id="11" className="colunas"/>
+                    <Celula id="12"/>
+                </tr>
+                <tr>
+                    <Celula id="20" className="colunas"/>
+                    <Celula id="21" className="colunas"/>
+                    <Celula id="22"/>
+                </tr>
+                </tbody>
+                </table>
+            );
+        }
+
+        function Logo(props) {
+            return (
+                <div id="header">
+                    <img src="unisinos-logo.svg" width="200" />
+                    <h2 className="titulo">{props.titulo}</h2>
+                </div>
+            );
+        }
+
+        function Jogo(props) {
+            return <div className="Jogo">
+                        <h2>{props.titulo}</h2>
+                        <Tabuleiro></Tabuleiro>
+                    </div>;
+        }
+
+        function App() {
+            return (
+                <div id="main">
+                    <Logo titulo="Exemplo 3 - Composição de elementos" />
+                    <Jogo titulo="Jogo-da-Velha" />
+                </div>
+            );
+        }
+
+        ReactDOM.render(
+            <App />,
+            document.getElementById('root')
+        );
+
+    </script>
+</body>
+
+</html>

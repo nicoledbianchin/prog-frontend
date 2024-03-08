@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>React - Atualização dinâmica inteligente</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@100&family=Roboto:wght@100&display=swap');
+        * {
+            font-family: 'Lato', sans-serif;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        #header {
+            height: 80px; 
+            border-bottom: 1pt solid black;
+        }
+
+        .titulo {
+            margin-right: 40%;
+            float: right;
+            color: #27348B;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        class Clock extends React.Component {
+            constructor(props) {
+                super(props);
+                // inicialização do objeto de estado.
+                this.state = { date: new Date() };
+            }
+
+            // método utilizado para indicar comportamento após
+            // componente ser montado. No caso, está sendo utilizada
+            // a função setInterval para invocar a função tick() a 
+            // cada um segundo.
+            componentDidMount() {
+                this.timerID = setInterval(
+                    () => this.tick(),
+                    1000
+                );
+            }
+
+            // cancela a operação de chamada recursiva.
+            componentWillUnmount() {
+                clearInterval(this.timerID);
+            }
+
+            // função que altera o estado da variável date a cada 1s.
+            tick() {
+                this.setState({
+                    date: new Date()
+                });
+            }
+
+            render() {
+                return (
+                    <div>
+                        <h1>Exemplo de alteração dinâmica de conteúdo</h1>
+                        <h2>Agora são <b>{this.state.date.toLocaleTimeString()}</b>.</h2>
+                    </div>
+                );
+            }
+        }
+
+        function Logo(props) {
+            return (
+                <div id="header">
+                    <img src="unisinos-logo.svg" width="200" />
+                    <h2 className="titulo">{props.titulo}</h2>
+                </div>
+            );
+        }
+
+        function App(props) {
+            return (
+                <div>
+                    <Logo titulo="Exemplo 2 - Alteração Dinâmica" />
+                    <Clock />
+                </div>
+            );
+        }
+
+
+        ReactDOM.render(
+            <App />,
+            document.getElementById('root')
+        );
+    </script>
+</body>
+
+</html>
