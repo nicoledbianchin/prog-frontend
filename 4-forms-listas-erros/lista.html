@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>React - Listas e Chaves</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@100&family=Roboto:wght@100&display=swap');
+
+        * {
+            font-family: 'Lato', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        #header {
+            height: 80px;
+            border-bottom: 1pt solid black;
+            margin-left: 20;
+            margin-right: 20;
+        }
+
+        .titulo {
+            /* margin-right: 40%; */
+            float: right;
+            color: #27348B;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+
+        class ToDoList extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    lista: props.items
+                };
+            }
+
+            render() {
+                const listItems = items.map((it) =>
+                    <li key={it.id}>
+                        {it.title}
+                    </li>
+                );
+                return (
+                    <div>
+                        <h3>{this.props.titulo}</h3>
+                        <ul>{listItems}</ul>
+                    </div>
+                );
+            }
+
+        }
+
+        
+        function Logo(props) {
+            return (
+                <div id="header">
+                    <img src="unisinos-logo.svg" width="200" />
+                    <h2 className="titulo">{props.titulo}</h2>
+                </div>
+            );
+        }
+
+        const items = [{ id: 1, title: 'task 1' }, { id: 2, title: 'task 2' }];
+        function App() {
+            return (
+                <div id="main">
+                    <Logo titulo="Exemplo 5 - Listas" />
+                    <ToDoList items={items} titulo="Lista de tarefas" />,
+                </div>
+            );
+        }
+
+        ReactDOM.render(
+            <App />,
+            document.getElementById('root')
+        );
+    </script>
+</body>
+
+</html>
