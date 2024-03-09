@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>React - Eventos</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@100&family=Roboto:wght@100&display=swap');
+        * {
+            font-family: 'Lato', sans-serif;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        #header {
+            height: 80px; 
+            border-bottom: 1pt solid black;
+        }
+
+        .titulo {
+            margin-right: 40%;
+            float: right;
+            color: #27348B;
+        }
+
+        button {
+            margin-left: 50;
+        }
+    </style>
+
+  </head>
+  <body>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        class Toggle extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {isToggleOn: true};
+
+                // This binding is necessary to make `this` work in the callback
+                this.handleClick = this.handleClick.bind(this);
+            }
+
+            handleClick() {
+                this.setState(state => ({
+                    isToggleOn: !state.isToggleOn
+                }));
+            }
+
+            render() {
+                return (
+                    <button onClick={this.handleClick}>
+                        {this.state.isToggleOn ? 'ON' : 'OFF'}
+                    </button>
+                );
+            }
+        }
+
+        function Logo(props) {
+            return (
+                <div id="header">
+                    <img src="unisinos-logo.svg" width="200" />
+                    <h2 className="titulo">{props.titulo}</h2>
+                </div>
+            );
+        }
+
+        function App(props) {
+            return (
+                <div>
+                    <Logo titulo="Exemplo 3 - Eventos" />
+                    <Toggle/>
+                </div>
+            );
+        }
+
+        ReactDOM.render(
+            <App/>,
+            document.getElementById('root')
+        );
+    </script>
+  </body>
+</html>
