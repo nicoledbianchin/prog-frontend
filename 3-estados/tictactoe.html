@@ -161,19 +161,19 @@
                 }));
             }
 
-            reiniciar() {
-                const matriz = [
+            reiniciar(e) {
+                const matrizInicial = [
                     [0, 0, 0],
                     [0, 0, 0],
                     [0, 0, 0]
                 ];
                 
-                this.setState({
-                    matriz: matriz,
+                this.setState(state => ({
+                    matriz: matrizInicial,
                     turno: true,
                     ganhador: null,
                     jogadas: 0
-                });
+                }));
             }
 
             render() {
@@ -202,7 +202,7 @@
                             Ganhador: {this.state.ganhador}
                         </h4>
 
-                        <button onClick={this.reiniciar}>Reiniciar jogo</button>
+                        <button onClick={(e) => this.reiniciar(e)}>Reiniciar jogo</button>
                     </div>
                 );
 

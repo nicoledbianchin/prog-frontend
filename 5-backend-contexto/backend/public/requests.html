@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>React - Contexto</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@100&family=Roboto:wght@100&display=swap');
+
+        * {
+            font-family: 'Lato', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        #header {
+            height: 80px;
+            border-bottom: 1pt solid black;
+        }
+
+        .titulo {
+            margin-right: 20;
+            float: right;
+            color: #27348B;
+        }
+
+        form {
+            margin: 0 auto;
+            padding-left: 10;
+            width: 80vw;
+            height: 60vh;
+        }
+
+        .ToDo {
+            color: green;
+        }
+
+        .Backlog {
+            color: gray;
+        }
+
+        .Canceled {
+            color: tomato;
+            text-decoration: line-through;
+        }
+
+        .Done {
+            color: royalblue;
+        }
+
+        input,
+        textarea,
+        button,
+        select,
+        label {
+            font-family: 'Roboto', sans-serif;
+            font-weight: bold;
+            font-size: 1em;
+        }
+
+        input,
+        button,
+        select {
+            height: 35px;
+        }
+
+        input,
+        textarea,
+        button,
+        select {
+            min-width: 80px;
+            border: 1pt solid lightgray;
+            border-radius: 0px;
+        }
+
+        button {
+            background-color: #27348B;
+            color: white;
+        }
+
+        .list {
+            border: 1pt solid lightgray;
+            width: 400px;
+            height: 200px;
+            overflow-y: auto;
+            background-color: whitesmoke;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        function Logo(props) {
+            return (
+                <div id="header">
+                    <img src="unisinos-logo.svg" width="200" />
+                    <h2 className="titulo">{props.titulo}</h2>
+                </div>
+            );
+        }
+
+        class ErrorBoundary extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = { hasError: false, message: '' };
+            }
+
+            static getDerivedStateFromError(error) {
+                console.log(error);
+                return { hasError: true };
+            }
+
+            componentDidCatch(error, errorInfo) {
+                console.log(errorInfo);
+                // Você também pode registrar o erro em um serviço de relatórios de erro
+                // logErrorToMyService(error, errorInfo);
+                alert(JSON.stringify(errorInfo));
+            }
+
+            render() {
+                if (this.state.hasError) {
+                    return <h1>Algum erro...</h1>;
+                }
+                return this.props.children;
+            }
+        }
+
+        const themes = {
+            light: {
+                foreground: '#000000',
+                background: '#eeeeee',
+            },
+            dark: {
+                foreground: '#ffffff',
+                background: '#222222',
+            }
+        };
+
+        // Criação do objeto de contexto
+        const ThemeContext = React.createContext(
+            themes.dark // default value
+        );
+
+        // Componente que altera um dado do contexto
+        class ThemedButton extends React.Component {
+            render() {
+                let props = this.props;
+                let theme = this.context; // obtém valor do contexto de tema
+                return (
+                    <button
+                        {...props}
+                        style={{ backgroundColor: theme.background }}
+                    />
+                );
+            }
+        }
+        ThemedButton.contextType = ThemeContext; // vincula o contexto de tema com o botao
+
+        function Toolbar(props) {
+            // Renderiza o botão que alterna o modo do tema
+            // note que no evento onClick é informada a função
+            // que foi passada por parâmetro no atributo 
+            // changeTheme, no componente App
+            return (
+                <ThemedButton onClick={props.changeTheme}>
+                    Altera tema
+                </ThemedButton>
+            );
+        }
+
+
+
+        class TaskForm extends React.Component {
+            constructor(props) {
+                super(props);
+                // const list = undefined;
+                const list = props.list ? props.list : [];
+                this.state = { id: 0, title: '', text: '', category: '', list: list };
+
+                this.handleTitleChange = this.handleTitleChange.bind(this);
+                this.handleTextChange = this.handleTextChange.bind(this);
+                this.handleCategoryChange = this.handleCategoryChange.bind(this);
+                this.handleSubmit = this.handleSubmit.bind(this);
+                this.handleSubmitList = this.handleSubmitList.bind(this);
+            }
+
+
+            // requisição de dados do servidor (back-end)
+            componentDidMount() {
+                fetch('http://localhost:3000/task')
+                    .then((response) => response.json())
+                    .then((responseJson) => {
+                    this.setState({
+                        list: responseJson.list
+                    })
+                });
+            }
+
+            handleSubmitList(event) {
+                event.preventDefault();
+                fetch('http://localhost:3000/task', {
+                    method: 'POST',  // POST - para atualizar dados!!!
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        list: this.state.list
+                    }),
+                }).then((response) => response.text())
+                    .then((responseText) => {
+                        alert('Resposta back-end: ' + responseText);
+                    });
+            }
+
+
+            handleTitleChange(event) {
+                this.setState({ title: event.target.value });
+            }
+
+            handleTextChange(event) {
+                this.setState({ text: event.target.value });
+            }
+
+            handleCategoryChange(event) {
+                this.setState({ category: event.target.value });
+            }
+
+            handleSubmit(event) {
+
+                const list = this.state.list;
+                list.push({
+                    id: this.state.list.length + 1,
+                    title: this.state.title,
+                    text: this.state.text,
+                    category: this.state.category
+                });
+                this.setState(state => ({
+                    title: '',
+                    text: '',
+                    category: '',
+                    list: list
+                }))
+                event.preventDefault();
+            }
+
+            render() {
+                let theme = this.context; // obtém valor do contexto de tema
+                let listItems = [];
+                // if (this.state.list) {
+                listItems = this.state.list.map((it) =>
+                    <li key={it.id} className={it.category}>
+                        <b>{it.category}</b>: {it.title}
+                    </li>
+                );
+                // }
+                return (
+
+                    <form onSubmit={this.handleSubmit}>
+                        <label htmlFor="ttl">Note title:</label>
+                        <br />
+                        <input name="ttl" type="text" value={this.state.title} size="30"
+                            onChange={this.handleTitleChange} 
+                            style={{ 
+                                backgroundColor: theme.background,
+                                color: theme.foreground
+                            }} 
+                        />
+                        <br />
+                        <br />
+                        <label htmlFor="txt">Text:</label>
+                        <br />
+                        <textarea name="txt" value={this.state.text} rows="4" cols="30"
+                            onChange={this.handleTextChange} 
+                            style={{ 
+                                backgroundColor: theme.background,
+                                color: theme.foreground
+                            }}
+                        />
+                        <br />
+                        <br />
+                        <label htmlFor="ctgr">Category:</label>
+                        <br />
+                        <select name="ctgr" value={this.state.category} 
+                            onChange={this.handleCategoryChange}
+                            style={{ 
+                                backgroundColor: theme.background,
+                                color: theme.foreground
+                            }}
+                            >
+                            <option value="">Select a category</option>
+                            <option value="Backlog">Backlog</option>
+                            <option value="ToDo">ToDo</option>
+                            <option value="Done">Done</option>
+                            <option value="Canceled">Canceled</option>
+                        </select>
+                        <br />
+                        <br />
+                        <button type="submit" value="Submit">Save</button>
+                        <button value="Send" onClick={this.handleSubmitList}>Send</button>
+                        <br />
+                        <br />
+                        <div className='list'>
+                            <b>Current task list</b>
+                            <ul>
+                                {listItems}
+                            </ul>
+                        </div>
+                    </form>
+                );
+            }
+        }
+        // Vinculando o form com o contexto de tema
+        TaskForm.contextType = ThemeContext; 
+
+        // const items = [{ id: 1, title: 'Live cycle & State', category: 'Done' }, { id: 2, title: 'Events', category: 'Done' }];
+        const items = [];
+
+        class App extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    theme: themes.light,
+                };
+
+                this.toggleTheme = () => {
+                    this.setState(state => ({
+                        theme:
+                            state.theme === themes.dark
+                                ? themes.light
+                                : themes.dark,
+                    }));
+                };
+            }
+
+            render() {
+                return (
+                    <div id="main">
+                        <Logo titulo="Exemplo 8 - Requests" />
+
+                        <ThemeContext.Provider value={this.state.theme}>
+                            <Toolbar changeTheme={this.toggleTheme}/>
+                            <div>
+                                <ErrorBoundary>
+                                    <TaskForm list={items} titulo="Lista de tarefas" />,
+                                </ErrorBoundary>
+                            </div>
+                        </ThemeContext.Provider>
+
+                    </div>
+                );
+            }
+        }
+
+        ReactDOM.render(
+            <App />,
+            document.getElementById('root')
+        );
+
+    </script>
+</body>
+
+</html>
